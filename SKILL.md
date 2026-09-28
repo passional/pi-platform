@@ -100,7 +100,7 @@ pnpm build        # 构建
 - API 层：`api/module_x/xxx.ts`，对象字面量方法 + `request`（来自 `@utils`），泛型用全局 `ApiResponse<T>` / `PageResult<T>`；URL 与后端 controller 对齐（如 `/system/dict/type/list`）
 - 页面：`views/module_x/...`；页面私有子组件放同目录 `components/` 下，公共组件命名 `FaXxx`
 - CRUD 页面优先复用现成套件：列表用 `useTable` + `FaTable` + `FaSearchBar`，弹窗表单用 `useCrudDialog`/`useCrudForm` + `FaDialog`，列定义用 `useTableColumns`，导入导出用 `useImportExport`——参考已有 `views/module_system/` 页面写法，不要手写 ElTable/ElDialog
-- 权限控制：按钮级用 `v-hasPerm="'sys:user:add'"`（支持数组）；代码内判断用 `useAuth().hasAuth(...)`；后端标识 `模块:资源:操作` 三段式，前后端保持一致
+- 权限控制：按钮级用 `v-hasPerm="['module_system:user:create']"`（数组；标识必须用 `module_*` 三段式，取自 sys_menu 种子与页面实际用例，不存在 `sys:*` 形式）；代码内判断用 `useAuth().hasAuth(...)`；后端标识 `模块:资源:操作` 三段式，前后端保持一致
 - i18n：文案用 `$t('key')`，词条加到 `locales/langs/zh.json` 与 `en.json` 两份
 - 自动导入：vue API（`ref`/`computed`/`watch`/`onMounted` 等）无需 import；Element Plus 组件模板内直接用；`ElMessage` 等按现有文件习惯可显式 import
 - 路由：静态壳路由在 `router/routes.ts`；业务路由来自后端菜单（`guards.ts` → `MenuProcessor` → `RouteRegistry` 动态 addRoute）。新增页面要在「菜单管理」配置 route_path/route_name/component_path/keep_alive
