@@ -77,3 +77,5 @@ AGENTS.md
 .agents
 .claude
 .codex
+# codegraph 本地索引，可随时重建，禁止入库
+.codegraph/
