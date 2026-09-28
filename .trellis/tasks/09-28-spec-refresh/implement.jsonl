@@ -1,0 +1,5 @@
+{"file": ".trellis/tasks/09-28-spec-refresh/research/canonical-facts.md", "reason": "统一术语/路径/现状事实清单——所有层实现者必读，保证跨层一致"}
+{"file": ".trellis/tasks/09-28-spec-refresh/research/backend-audit.md", "reason": "backend 层逐条修改依据（stale/missing/contradiction + 行号证据 + 勿动清单）"}
+{"file": ".trellis/tasks/09-28-spec-refresh/research/frontend-audit.md", "reason": "frontend 层逐条修改依据 + SKILL §7/§9 覆盖缺口的目标文件建议"}
+{"file": ".trellis/tasks/09-28-spec-refresh/research/arch-ops-sec-testing-audit.md", "reason": "architecture/operations/security/testing 四层逐条修改依据"}
+{"file": ".trellis/tasks/09-28-spec-refresh/research/git-drift-since-baseline.md", "reason": "基线以来 37 commits 的主题归类与已删除/重命名路径全清单（R2 依据）"}

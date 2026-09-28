@@ -1,0 +1,4 @@
+{"file": ".trellis/tasks/09-28-spec-refresh/research/canonical-facts.md", "reason": "校验 spec 内容与当前代码事实一致的基准（AC2/AC3 抽查源）"}
+{"file": ".trellis/tasks/09-28-spec-refresh/research/git-drift-since-baseline.md", "reason": "AC1 grep 清单来源：spec 中不得再引用的已删除/重命名路径"}
+{"file": ".trellis/tasks/09-28-spec-refresh/research/backend-audit.md", "reason": "核对 'Still accurate' 声明未被误改（Non-goals 约束）"}
+{"file": ".trellis/tasks/09-28-spec-refresh/research/arch-ops-sec-testing-audit.md", "reason": "核对四层修改完整性与 'Still accurate' 保留情况"}
