@@ -27,3 +27,25 @@
 ### Status
 
 [OK] **Completed**
+
+
+## Session 2: spec-refresh 收尾: Phase 3.3 遗留项闭环
+<!-- trellis-session: v=2 fp=1d7808b2ed64b64c -->
+
+**Date**: 2026-09-28
+**Task**: spec-refresh 收尾: Phase 3.3 遗留项闭环
+**Branch**: `master`
+
+### Summary
+
+3.3 判断走查: spec 层面无需增补(主体知识已随任务落层,工具知识归 trellis-meta)。落地两条: SKILL.md §4 权限示例修正(sys:user:add→module_system:user:create,种子+views 双核验,commit 199ecdb5); specs 仓库 README 纠错(registry source 必须带 /.trellis/spec 子目录,裸 URL 双层嵌套;补 update -f 基线重建与反向回流工作流,specs@5f686a4 已 push)。pi-platform 待 push: 6d380ae9/4baf69c9/69b019e8/199ecdb5。
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `199ecdb5` | docs(SKILL.md): 修正 §4 权限示例（sys:user:add → module_system:user:create） |
+
+### Status
+
+[OK] **Completed**
