@@ -75,11 +75,11 @@ pnpm build        # 构建
 1. 复制 `backend/env/.env.example` 为 `.env.dev`，按文件头注释修改必改项（`DATABASE_PASSWORD` / `REDIS_PASSWORD` / `OPENAI_API_KEY`）；`DATABASE_TYPE` 支持 mysql / postgres / sqlite——本地体验用 sqlite 可零配置起跑
 2. `uv sync && uv run main.py run --env=dev`：**启动时自动执行迁移并导入 `sql/*.json` 种子数据**（菜单/角色/用户/字典等），无需手动建表导数；dev 环境检测到模型变更还会自动生成并应用迁移
 3. 前端：`frontend/web` 内 `pnpm install && pnpm dev`（小程序/App H5 调试用 `pnpm dev:h5`）
-4. 默认账号：`super` / `admin` / `user`，密码均为 `123456`（已校验种子 bcrypt 哈希；官方文档见 `frontend/docs/src/guide/start.md`，部署后应立即修改）
+4. 默认账号：`super` / `admin` / `user`，密码均为 `123456`（已校验种子哈希：PBKDF2-HMAC-SHA256、600k 轮，见 `backend/app/utils/password_util.py`；官方文档见 `frontend/docs/src/guide/start.md`，部署后应立即修改）
 5. 访问地址：Web 前端 `http://localhost:{VITE_PORT}`（`frontend/web/.env` 为 5180）；后端 `http://localhost:8001`、Swagger `http://localhost:8001/docs`、API 前缀 `/api/v1`
 - Docker 一键部署：根目录 `./deploy.sh`（详见 `docker/README.md`）
 
-前端代理：vite 将 `VITE_APP_BASE_API` 前缀代理到 `VITE_API_BASE_URL`（见 `vite.config.ts`），本地开发无 CORS 问题；AI WebSocket 用 `VITE_APP_WS_ENDPOINT` 直连后端（不走代理）。
+前端代理：vite 将 `VITE_APP_BASE_API` 前缀代理到 `VITE_API_BASE_URL`（见 `vite.config.ts`），本地开发无 CORS 问题；AI WebSocket 与健康监测/存储传输 SSE 都用 `VITE_APP_WS_ENDPOINT` 直连后端（不走代理）。
 
 ## 3. 后端约定（backend/app）
 
@@ -107,7 +107,7 @@ pnpm build        # 构建
 - KeepAlive 与工作栏按「组件名」匹配：`defineOptions({ name })` 必须与菜单的 route_name 一致，否则页面缓存/缓存排除（exclude）会失灵
 - 有副作用页面（WebSocket/定时器/全局事件监听）必须实现 `onActivated`/`onDeactivated`：deactivated 时释放资源，activated 时按需恢复。`onUnmounted` 只在缓存被驱逐时触发，不能作为唯一清理点（详见第 7 节）
 - 路由视图缓存为**单层**：目录路由不挂组件，`KeepAlive` 只存在于 `layouts/fa-page-content/index.vue` 一处，缓存键是叶子路由 `path`（query 变化不重挂载，改键逻辑见同文件 `routeViewCacheKey`）
-- 环境变量：公共 `.env`（`VITE_APP_BASE_API=/api/v1` 请求前缀、`VITE_PORT=5180`）；`.env.development`（`VITE_API_BASE_URL=http://127.0.0.1:8001` 代理目标；AI WebSocket `VITE_APP_WS_ENDPOINT=ws://localhost:8001` 直连）
+- 环境变量：公共 `.env`（`VITE_APP_BASE_API=/api/v1` 请求前缀、`VITE_PORT=5180`）；`.env.development`（模板为仓库内 `.env.development.example`，本地复制后使用：`VITE_API_BASE_URL=http://127.0.0.1:8001` 代理目标；`VITE_APP_WS_ENDPOINT=ws://localhost:8001` 供 AI WebSocket 与健康/传输 SSE 直连）
 - WebSocket 鉴权（AI chat）：token 经 `Sec-WebSocket-Protocol` 传 `["access_token", "access_token." + jwt]`，后端在握手阶段 `websocket_authenticate` 校验
 - 图标：`FaSvgIcon` + iconify（`ri:` / `ep:` / `line-md:`）；i18n 用 `$t(...)`
 
@@ -144,7 +144,7 @@ pnpm build        # 构建
 
 ## 9. 前端产物验证（dist）
 
-**源码已修 ≠ 部署已修。** dist 是生成物、不入库（`.gitignore`），但仓库内存在多份预构建副本并直接被打进部署，改完前端源码必须重建并同步，否则线上仍跑旧行为（AI chat 重复「连接成功」就因此漏判过一轮：源码 `e39a369b` 已修，三份 dist 仍停在修复前）。
+**源码已修 ≠ 部署已修。** dist 是生成物、不入库（`.gitignore`，fresh checkout 中这些目录不存在），但部署链路存在多份 web 产物目录（见下表）外加一份 H5，每个部署入口只认自己那份——改完前端源码必须重建并同步到所有目标，否则线上仍跑旧行为（历史教训：AI chat 重复「连接成功」就因此漏判过一轮——源码 `e39a369b` 已修，当时的三份 dist 仍停在修复前）。
 
 **三份产物与各自的服务入口**
 
